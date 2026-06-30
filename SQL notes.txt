@@ -1,0 +1,1017 @@
+To see available database
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| demo               |
+| information_schema |
+| march_crud_db      |
+| mysql              |
+| performance_schema |
+| psadb1             |
+| sca_db             |
+| student_db         |
+| studentcrm         |
+| testingcampus      |
++--------------------+
+
+Connect to the required database-> use database_name;
+mysql> use testingcampus;
+Database changed
+
+To see tables in current database-> show tables;
+mysql> show tables;
++-------------------------+
+| Tables_in_testingcampus |
++-------------------------+
+| employee                |
++-------------------------+
+
+To read the data from table-> select * from table_name;
+mysql> select * from employee;
++-----+--------+-----------+--------+
+| EID | Ename  | City      | salary |
++-----+--------+-----------+--------+
+| 100 | smith  | Bangalore |  10000 |
+| 101 | carl   | Bangalore |  12000 |
+| 102 | Ram    | Chennai   |  12000 |
+| 103 | pankaj | Hyderabad |   5000 |
+| 104 | vikram | Pune      |   2000 |
++-----+--------+-----------+--------+
+
+mysql> select eid,ename from employee;
++-----+--------+
+| eid | ename  |
++-----+--------+
+| 100 | smith  |
+| 101 | carl   |
+| 102 | Ram    |
+| 103 | pankaj |
+| 104 | vikram |
++-----+--------+
+
+
+note:- for filtering data-> where
+
+mysql> select ename from employee where salary=10000;
++-------+
+| ename |
++-------+
+| smith |
++-------+
+
+Give me the employee name whose salary is greater than equal to 10000
+
+mysql> select ename from employee where salary>=10000;
++-------+
+| ename |
++-------+
+| smith |
+| carl  |
+| Ram   |
++-------+
+
+note:- compare more than one data use -> in operator
+
+Give me the employee name whose salary 5000 and 2000
+
+mysql> select ename from employee where salary in(5000,2000);
++--------+
+| ename  |
++--------+
+| pankaj |
+| vikram |
++--------+
+
+Give me employee id whose name are smith and carl
+
+mysql> select eid from employee where ename in("smith","carl");
++-----+
+| eid |
++-----+
+| 100 |
+| 101 |
++-----+
+
+
+note:- select->from->where->group by->having->order by
+
+note:- for filtering data-> where and having
+
+mysql> select * from employee where salary=10000;
++-----+-------+-----------+--------+
+| EID | Ename | City      | salary |
++-----+-------+-----------+--------+
+| 100 | smith | Bangalore |  10000 |
++-----+-------+-----------+--------+
+1 row in set (0.07 sec)
+
+mysql> select * from employee having salary=10000;
++-----+-------+-----------+--------+
+| EID | Ename | City      | salary |
++-----+-------+-----------+--------+
+| 100 | smith | Bangalore |  10000 |
++-----+-------+-----------+--------+
+
+WHERE filters rows before grouping.
+HAVING filters groups after GROUP BY.
+
+filter the record using where command and give me the employee id whose name is Vikram
+mysql> select eid from employee where ename='vikram';
++-----+
+| eid |
++-----+
+| 104 |
++-----+
+
+Give me the employee id's sorted in descending order
+mysql> select eid from employee order by eid desc;
++-----+
+| eid |
++-----+
+| 104 |
+| 103 |
+| 102 |
+| 101 |
+| 100 |
++-----+
+note:- in sql to sort data we use order by command
+
+sort the employee names in descending order
+mysql> select ename from employee order by ename desc;
++--------+
+| ename  |
++--------+
+| vikram |
+| smith  |
+| Ram    |
+| pankaj |
+| carl   |
++--------+
+
+Give me the employee id's sorted in ascecending order
+mysql> select ename from employee order by ename asc;
++--------+
+| ename  |
++--------+
+| carl   |
+| pankaj |
+| Ram    |
+| smith  |
+| vikram |
++--------+
+
+built-in function in sql->(max,min,avg,sum,count/group by,limit)
+give me the maximum salary from the table
+mysql> select max(salary) from employee;
++-------------+
+| max(salary) |
++-------------+
+|       12000 |
++-------------+
+
+give me the minimum salary from the table
+mysql> select min(salary) from employee;
++-------------+
+| min(salary) |
++-------------+
+|        2000 |
++-------------+
+
+give me the average salary from the table
+mysql> select avg(salary) from employee;
++-------------+
+| avg(salary) |
++-------------+
+|   8200.0000 |
++-------------+
+
+give me the sum all salary
+mysql> select sum(salary) from employee;
++-------------+
+| sum(salary) |
++-------------+
+|       41000 |
++-------------+
+
+count the numbers of employee in our company
+mysql> select count(eid) from employee;
++------------+
+| count(eid) |
++------------+
+|          5 |
++------------+
+
+count number of employee city wise
+mysql> select count(eid) from employee group by city;
++------------+
+| count(eid) |
++------------+
+|          2 |
+|          1 |
+|          1 |
+|          1 |
++------------+
+mysql> select city,count(eid) from employee group by city;
++-----------+------------+
+| city      | count(eid) |
++-----------+------------+
+| Bangalore |          2 |
+| Chennai   |          1 |
+| Hyderabad |          1 |
+| Pune      |          1 |
++-----------+------------+
+
+"Group the employees by city, count the number of employees in each city, and display the counts in ascending order."
+mysql> SELECT city, COUNT(eid) AS employee_count
+    -> FROM employee
+    -> GROUP BY city
+    -> ORDER BY employee_count ASC;
++-----------+----------------+
+| city      | employee_count |
++-----------+----------------+
+| Chennai   |              1 |
+| Hyderabad |              1 |
+| Pune      |              1 |
+| Bangalore |              2 |
++-----------+----------------+
+
+
+mysql> select count(eid) from employee group by city order by count(eid);
++------------+
+| count(eid) |
++------------+
+|          1 |
+|          1 |
+|          1 |
+|          2 |
++------------+
+
+"count number of city and sort the count in ascending order"
+mysql> select count(city) from employee group by city order by count(city) asc;
++-------------+
+| count(city) |
++-------------+
+|           1 |
+|           1 |
+|           1 |
+|           2 |
++-------------+
+
+group the candidates based on age
+
+group the city after counting where the city name is Bangalore
+mysql> SELECT COUNT(city)
+    -> FROM employee
+    -> GROUP BY city
+    -> HAVING city = 'Bangalore';
++-------------+
+| COUNT(city) |
++-------------+
+|           2 |
++-------------+
+
+convert all employee name in uppercase
+mysql> select ucase(ename) from employee;
++--------------+
+| ucase(ename) |
++--------------+
+| SMITH        |
+| CARL         |
+| RAM          |
+| PANKAJ       |
+| VIKRAM       |
++--------------+
+
+convert all employee name in lowercase
+mysql> select lcase(ename) from employee;
++--------------+
+| lcase(ename) |
++--------------+
+| smith        |
+| carl         |
+| ram          |
+| pankaj       |
+| vikram       |
++--------------+
+
+top record
+mysql> select * from employee order by eid asc limit 2;
++-----+-------+-----------+--------+
+| EID | Ename | City      | salary |
++-----+-------+-----------+--------+
+| 100 | smith | Bangalore |  10000 |
+| 101 | carl  | Bangalore |  12000 |
++-----+-------+-----------+--------+
+
+give me first the record from the table
+mysql> select * from employee order by eid asc limit 1;
++-----+-------+-----------+--------+
+| EID | Ename | City      | salary |
++-----+-------+-----------+--------+
+| 100 | smith | Bangalore |  10000 |
++-----+-------+-----------+--------+
+
+last two record from the table
+mysql> select * from employee order by eid desc limit 2;
++-----+--------+-----------+--------+
+| EID | Ename  | City      | salary |
++-----+--------+-----------+--------+
+| 104 | vikram | Pune      |   2000 |
+| 103 | pankaj | Hyderabad |   5000 |
++-----+--------+-----------+--------+
+
+give me cities only first three letters
+mysql> select mid(city,1,3) from employee;
++---------------+
+| mid(city,1,3) |
++---------------+
+| Ban           |
+| Ban           |
+| Che           |
+| Hyd           |
+| Pun           |
++---------------+
+
+
+print current system sql
+mysql> select now();
++---------------------+
+| now()               |
++---------------------+
+| 2026-05-31 11:39:58 |
++---------------------+
+
+note:- AS is used to give a temporary name (alias) to a column or table.
+mysql> select now() as time;
++---------------------+
+| time                |
++---------------------+
+| 2026-05-31 11:40:56 |
++---------------------+
+
+change the column ename to name and print the output
+mysql> select ename as name from employee;
++--------+
+| name   |
++--------+
+| smith  |
+| carl   |
+| Ram    |
+| pankaj |
+| vikram |
++--------+
+
+wild-card:- like "%letter"
+give me the employee end with letter m
+mysql> select ename from employee where ename like "%m";
++--------+
+| ename  |
++--------+
+| Ram    |
+| vikram |
++--------+
+
+
+give me the employees with consist of letter m
+mysql> select ename from employee where ename like "%m%";
++--------+
+| ename  |
++--------+
+| smith  |
+| Ram    |
+| vikram |
++--------+
+
+give me name of the employee with start letter s
+mysql> select ename from employee where ename like "S%";
++-------+
+| ename |
++-------+
+| smith |
++-------+
+
+give me name of the employee which consist of three letters
+mysql> select ename from employee where ename like "_ _ _";
++-------+
+| ename |
++-------+
+| Ram   |
++-------+
+
+give me name of the employee which consist of five letters
+mysql> select ename from employee where ename like "_ _ _ _ _";
++-------+
+| ename |
++-------+
+| smith |
++-------+
+
+give me name of the employee which end letter m and including three letters
+mysql> SELECT ename
+    -> FROM employee
+    -> WHERE ename LIKE '__m';
++-------+
+| ename |
++-------+
+| Ram   |
++-------+
+
+delete the record from employee table and eid=101
+DELETE FROM employee WHERE eid = 101;
+
+➡️ "Delete the records from the employee table where eid is 101 or 102."
+DELETE FROM employee HERE eid IN (101, 102);
+
+➡️ "Delete the record from the employee table where the employee name is 'smith'."
+SQL query: ELETE FROM employeeWHERE ename = 'smith';
+
+➡️ "Drop the employee table."
+SQL query: DROP TABLE EMPLOYEE;
+
+
+➡️ "Print only unique city names from the table."
+Use DISTINCT: SELECT DISTINCT city FROM employee;
+mysql> select distinct city from employee;
++-----------+
+| city      |
++-----------+
+| Bangalore |
+| Chennai   |
+| Hyderabad |
+| Pune      |
++-----------+
+
+➡️ "Give me the distinct salaries from the employee table."
+SQL query: SELECT DISTINCT salary FROM employee;
+mysql> SELECT DISTINCT salary FROM employee;
++--------+
+| salary |
++--------+
+|  10000 |
+|  12000 |
+|   5000 |
+|   2000 |
++--------+
+
+➡️ "Concatenate the employee name and salary."
+Use the CONCAT() function: SELECT CONCAT(ename, salary) AS employee_details FROM employee;
+mysql> select concat(ename,salary) from employee;
++----------------------+
+| concat(ename,salary) |
++----------------------+
+| smith10000           |
+| carl12000            |
+| Ram12000             |
+| pankaj5000           |
+| vikram2000           |
++----------------------+
+
+➡️ "Separate the employee name and salary and then concatenate the contents of the columns."
+mysql> select concat(ename,"_",salary) from employee;
++--------------------------+
+| concat(ename,"_",salary) |
++--------------------------+
+| smith_10000              |
+| carl_12000               |
+| Ram_12000                |
+| pankaj_5000              |
+| vikram_2000              |
++--------------------------+
+
+
+➡️ "Remove the white spaces from the left side of employee names."
+mysql> select ltrim(ename) from employee;
++--------------+
+| ltrim(ename) |
++--------------+
+| smith        |
+| carl         |
+| Ram          |
+| pankaj       |
+| vikram       |
++--------------+
+
+➡️ "Remove the white spaces from the right side of the employee names in the employee table and then display the output."
+SQL query: SELECT LTRIM(ename) AS employee_name FROM employee;
+mysql> select rtrim(ename) from employee;
++--------------+
+| rtrim(ename) |
++--------------+
+| smith        |
+| carl         |
+| Ram          |
+| pankaj       |
+| vikram       |
++--------------+
+
+➡️ "Remove the leading and trailing spaces from the employee name and salary columns, concatenate them with an underscore (_), and display the output."
+mysql> select concat(trim(ename),"_",trim(salary)) from employee;
++--------------------------------------+
+| concat(trim(ename),"_",trim(salary)) |
++--------------------------------------+
+| smith_10000                          |
+| carl_12000                           |
+| Ram_12000                            |
+| pankaj_5000                          |
+| vikram_2000                          |
++--------------------------------------+
+
+concat ename and salary print the output in decending order
+mysql> select concat(ename,salary) from employee order by concat(ename,salary);
++----------------------+
+| concat(ename,salary) |
++----------------------+
+| carl12000            |
+| pankaj5000           |
+| Ram12000             |
+| smith10000           |
+| vikram2000           |
++----------------------+
+mysql> select concat(ename,salary) from employee order by concat(ename,salary) desc;
++----------------------+
+| concat(ename,salary) |
++----------------------+
+| vikram2000           |
+| smith10000           |
+| Ram12000             |
+| pankaj5000           |
+| carl12000            |
++----------------------+
+
+sort employee name ascending order
+mysql> select ename from employee order by ename asc;
++--------+
+| ename  |
++--------+
+| carl   |
+| pankaj |
+| Ram    |
+| smith  |
+| vikram |
++--------+
+
+update the record where employee name is smith to abc
+UPDATE employee SET ename = 'ABC' WHERE ename = 'smith';
+
+update the employee name smith to abc where employee id is 101
+update employee set ename='ABC' where eid='101';
+
+update the employee id from 101 to 110;
+update employee set eid=110 where eid='101';
+
+replace the city name bangalore with benguluru in the table
+update employee set city="bangaluru" where city="bangalor";
+
+delete the record from the table wherever you find smith;
+delete from employee where ename="smith";
+
+delete the record whosever salary is 10000
+delete from employee where salary=10000;
+
+update everyone salary by 200
+update employee set salary=salary+200;
+mysql> select * from employee;
++-----+--------+-----------+--------+
+| EID | Ename  | City      | salary |
++-----+--------+-----------+--------+
+| 100 | smith  | Bangalore |  10200 |
+| 101 | carl   | Bangalore |  12200 |
+| 102 | Ram    | Chennai   |  12200 |
+| 103 | pankaj | Hyderabad |   5200 |
+| 104 | vikram | Pune      |   2200 |
+
+
+add column in the table employee at the end
+mysql> alter table employee add email varchar(20);
+Query OK, 0 rows affected (0.28 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee;
++-----+--------+-----------+--------+-------+
+| EID | Ename  | City      | salary | email |
++-----+--------+-----------+--------+-------+
+| 100 | smith  | Bangalore |  10200 | NULL  |
+| 101 | carl   | Bangalore |  12200 | NULL  |
+| 102 | Ram    | Chennai   |  12200 | NULL  |
+| 103 | pankaj | Hyderabad |   5200 | NULL  |
+| 104 | vikram | Pune      |   2200 | NULL  |
++-----+--------+-----------+--------+-------+
+
+
+add column in the table employee at the first
+mysql> alter table employee add eno varchar(10) first;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee;
++------+-----+--------+-----------+--------+-------+
+| eno  | EID | Ename  | City      | salary | email |
++------+-----+--------+-----------+--------+-------+
+| NULL | 100 | smith  | Bangalore |  10200 | NULL  |
+| NULL | 101 | carl   | Bangalore |  12200 | NULL  |
+| NULL | 102 | Ram    | Chennai   |  12200 | NULL  |
+| NULL | 103 | pankaj | Hyderabad |   5200 | NULL  |
+| NULL | 104 | vikram | Pune      |   2200 | NULL  |
++------+-----+--------+-----------+--------+-------+
+
+add column after ename
+mysql> alter table employee add surname varchar(20) after ename;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee;
++------+-----+--------+---------+-----------+--------+-------+
+| eno  | EID | Ename  | surname | City      | salary | email |
++------+-----+--------+---------+-----------+--------+-------+
+| NULL | 100 | smith  | NULL    | Bangalore |  10200 | NULL  |
+| NULL | 101 | carl   | NULL    | Bangalore |  12200 | NULL  |
+| NULL | 102 | Ram    | NULL    | Chennai   |  12200 | NULL  |
+| NULL | 103 | pankaj | NULL    | Hyderabad |   5200 | NULL  |
+| NULL | 104 | vikram | NULL    | Pune      |   2200 | NULL  |
++------+-----+--------+---------+-----------+--------+-------+
+
+
+delete a column email from table
+mysql> alter table employee drop column email;
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee;
++------+-----+--------+---------+-----------+--------+
+| eno  | EID | Ename  | surname | City      | salary |
++------+-----+--------+---------+-----------+--------+
+| NULL | 100 | smith  | NULL    | Bangalore |  10200 |
+| NULL | 101 | carl   | NULL    | Bangalore |  12200 |
+| NULL | 102 | Ram    | NULL    | Chennai   |  12200 |
+| NULL | 103 | pankaj | NULL    | Hyderabad |   5200 |
+| NULL | 104 | vikram | NULL    | Pune      |   2200 |
++------+-----+--------+---------+-----------+--------+
+
+mysql> select length(ename) from employee;
++---------------+
+| length(ename) |
++---------------+
+|             5 |
+|             4 |
+|             3 |
+|             6 |
+|             6 |
++---------------+	
+
+
+Query1
+	(Query2)
+
+Subquery-> query within query is called subquery
+*subquery in same table
+*if table are then same column should be present in both
+
+A subquery is a query nested inside another query. 
+The inner query executes first, and its result is used by the outer query. 
+Subqueries can be written on the same table or different tables. 
+When using IN or NOT IN, the compared columns should have compatible data types.
+
+give me second maximum salary
+mysql> SELECT MAX(salary)
+    -> FROM employee
+    -> WHERE salary < (
+    ->     SELECT MAX(salary)
+    ->     FROM employee
+    -> );
++-------------+
+| MAX(salary) |
++-------------+
+|       10200 |
++-------------+	
+
+
+third maximum salary
+mysql> SELECT MAX(salary)
+    -> FROM employee
+    -> WHERE salary < (
+    ->     SELECT MAX(salary)
+    ->     FROM employee
+    ->     WHERE salary < (
+    ->         SELECT MAX(salary)
+    ->         FROM employee
+    ->     )
+    -> );
++-------------+
+| MAX(salary) |
++-------------+
+|        5200 |
++-------------+	
+
+give me the employee name who got incative
+
+
+employee table
+| eid | ename  | city      | salary |	
+| --- | ------ | --------- | ------ |
+| 100 | smith  | Bangalore | 10000  |
+| 101 | carl   | Bangalore | 12000  |
+| 102 | Ram    | Mysore    | 12000  |
+| 103 | pankaj | Delhi     | 5000   |
+| 104 | vikram | Mumbai    | 2000   |
+
+incentive_list
+| eid | incen_amount | incentive_date |
+| --- | ------------ | -------------- |
+| 100 | 5000         | 2014-02-02     |
+| 100 | 3000         | 2014-03-06     |
+| 101 | 6000         | 2016-03-09     |
+| 102 | 2000         | 2015-02-09     |
+
+
+mysql> SELECT ename
+    -> FROM employee
+    -> WHERE eid IN (
+    ->     SELECT eid
+    ->     FROM incentive_list
+    -> );
++-------+
+| ename |
++-------+
+| smith |
+| carl  |
+| Ram   |
++-------+	
+
+give the name of employee who are not married
+r '="no")' at line 1
+mysql> SELECT ename
+    -> FROM employee2
+    -> WHERE eid IN (
+    ->     SELECT eid
+    ->     FROM status
+    ->     WHERE marital_status = 'No'
+    -> );
++-------+
+| ename |
++-------+
+| Carl  |
+| Rom   |
++-------+
+
+
+give me the employee of only female candidates and also their salary
+mysql> SELECT ename, salary
+    -> FROM employee2
+    -> WHERE eid IN (
+    ->     SELECT eid
+    ->     FROM status
+    ->     WHERE gender = 'F'
+    -> );
++--------+--------+
+| ename  | salary |
++--------+--------+
+| Ankita |   5000 |
+| Sheela |   2000 |
++--------+--------+	
+
+give me the employee name who got an inactive amount greater than or equal to 5000
+mysql> SELECT ename
+    -> FROM employee2
+    -> WHERE eid IN (
+    ->     SELECT eid
+    ->     FROM incentive_list
+    ->     WHERE incen_amount >= 5000
+    -> );
++-------+
+| ename |
++-------+
+| Smith |
+| Carl  |
++-------+	
+
+give the employee name who married and has got incentive
+mysql> SELECT ename
+    -> FROM employee2
+    -> WHERE eid IN (
+    ->     SELECT eid
+    ->     FROM incentive_list
+    ->     WHERE eid IN (
+    ->         SELECT eid
+    ->         FROM status
+    ->         WHERE marital_status = 'yes'
+    ->     )
+    -> );
++-------+
+| ename |
++-------+
+| Smith |
++-------+	
+
+give me the marital status of the employee whose salary is greater than 10000
+
+SELECT eid, marital_status
+FROM status
+WHERE eid IN (
+    SELECT eid
+    FROM employee2
+    WHERE salary > 10000
+);
+
++------+----------------+
+| eid  | marital_status |
++------+----------------+
+|  100 | yes            |
+|  101 | No             |
+|  102 | No             |
++------+----------------+	
+
+give me the employee name who doesn't get incentive
+mysql> SELECT ename
+    -> FROM employee2
+    -> WHERE eid NOT IN (
+    ->     SELECT eid
+    ->     FROM incentive_list
+    -> );
++--------+
+| ename  |
++--------+
+| Ankita |
+| Sheela |
++--------+
+
+employee name containing letter m  who got incentive 
+mysql> SELECT ename
+    -> FROM employee2
+    -> WHERE ename LIKE '%m%'
+    -> AND eid IN (
+    ->     SELECT eid
+    ->     FROM incentive_list
+    -> );
++-------+
+| ename |
++-------+
+| Smith |
+| Rom   |
++-------+
+
+
+employee name who is married and male
+mysql> SELECT ename
+    -> FROM employee2
+    -> WHERE eid IN (
+    ->     SELECT eid
+    ->     FROM status
+    ->     WHERE marital_status = 'yes'
+    ->       AND gender = 'M'
+    -> );
++-------+
+| ename |
++-------+
+| Smith |
++-------+	
+
+data types
+
+Integer Types
+-------------
+TINYINT
+SMALLINT
+MEDIUMINT
+INT
+BIGINT
+
+Character Types
+---------------
+CHAR
+VARCHAR
+BLOB
+
+Numeric Types
+-------------
+FLOAT
+DOUBLE
+
+Date/Time Types
+---------------
+DATE
+TIME
+YEAR
+TIMESTAMP
+
+Special Type
+------------
+ENUM
+
+
+
+1. Integer (Whole Number) Data Types: Used to store whole numbers.
+| Data Type | Storage | Range (Signed)                  |
+| --------- | ------- | ------------------------------- |
+| TINYINT   | 1 Byte  | -128 to 127                     |
+| SMALLINT  | 2 Bytes | -32,768 to 32,767               |
+| MEDIUMINT | 3 Bytes | -8,388,608 to 8,388,607         |
+| INT       | 4 Bytes | -2,147,483,648 to 2,147,483,647 |
+| BIGINT    | 8 Bytes | Very large integers             |
+Example
+CREATE TABLE student (
+    sid INT,
+    age TINYINT
+);
+
+When to Use
+Roll numbers
+Employee IDs
+Age
+Quantity
+
+2. Character/String Data Types : Used to store text.
+CHAR-Fixed-length string.
+
+CHAR(4)
+
+If you store: 'ABC'
+MySQL stores: 'ABC '
+(one extra space)
+
+Example: name CHAR(20)
+Use Cases
+Gender codes
+Country codes
+Fixed-size values
+
+
+VARCHAR: Variable-length string.
+VARCHAR(20)
+Stores only the actual characters.
+
+Example
+name VARCHAR(50)
+Use Cases
+Names
+Addresses
+Emails
+Cities
+
+BLOB : Binary Large Object.
+Used to store:
+Images
+Audio files
+Videos
+Documents
+Example: photo BLOB
+
+3. Numeric Data Types : Used for decimal values.
+
+FLOAT: Stores approximate decimal values.
+sql: salary FLOAT
+Example: 1234.56
+
+DOUBLE: Stores larger and more precise decimal values.
+sql: price DOUBLE
+Example: 123456789.12345
+
+4. ENUM Data Type: Used when a column can contain only specific values.
+
+Syntax: ENUM('M','F')
+Example: gender ENUM('M','F')
+
+Valid values:
+M
+F
+
+Invalid values are rejected.
+
+Use Cases
+Gender
+Status
+Department Type
+User Role
+
+
+5. Date and Time Data Types
+
+DATE: Stores only the date.
+Format: YYYY-MM-DD
+Example:
+sql: birth_date DATE
+Stored value:2026-06-01
+
+
+TIME: Stores only time.
+Format: HH:MM:SS
+Example: 
+sql: login_time TIME
+Stored value: 14:30:45
+
+
+YEAR: Stores only the year.
+Example:
+sql: joining_year YEAR
+Stored value: 2026
+
+
+TIMESTAMP: Stores both date and time.
+Example:
+sql: created_at TIMESTAMP
+Stored value: 2026-06-01 14:30:45
+Commonly used for:
+Record creation time
+Login history
+Audit logs
+
